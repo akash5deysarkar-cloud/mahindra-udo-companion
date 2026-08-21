@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: mahindra-udo-companion
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn server:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: ADMIN_PASSWORD
+        value: mahindra2026

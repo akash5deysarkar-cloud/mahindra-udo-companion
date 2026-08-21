@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mahindra UDO EV Electric 3-Wheeler Web Companion 🛺⚡</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+    <!-- Header Navbar -->
+    <header class="navbar">
+        <div class="brand">
+            <span class="brand-icon">🛺</span>
+            <div>
+                <div class="brand-title">MAHINDRA UDO EV</div>
+                <div class="brand-subtitle">Electric 3-Wheeler Web Companion</div>
+            </div>
+        </div>
+        <div class="nav-links">
+            <button class="nav-btn" onclick="honkHorn()">📢 Honk Horn</button>
+            <a href="/admin" class="nav-btn admin-link">👑 Web Admin Portal</a>
+        </div>
+    </header>
+
+    <!-- Main App Container -->
+    <div class="container">
+        <div class="companion-wrapper">
+            
+            <!-- Left Column: Interactive Vehicle Canvas & Speech Bubble -->
+            <div class="canvas-card">
+                <div class="speech-bubble-container">
+                    <div class="speech-bubble-box" id="speechBubbleText">
+                        Mahindra UDO EV Ready! Certified Range >200 km! 🛺⚡
+                    </div>
+                </div>
+
+                <div class="canvas-container">
+                    <canvas id="udoCanvas"></canvas>
+                </div>
+            </div>
+
+            <!-- Right Column: Telemetry & Controls Dashboard -->
+            <div class="controls-card">
+                <div class="card-title">
+                    <span>🕹️ Transmission Shifter & Controls</span>
+                </div>
+
+                <!-- Gear Selector (P, R, N, D) -->
+                <div>
+                    <label class="stat-label" style="display:block; margin-bottom: 6px;">SELECT GEAR (P, R, N, D)</label>
+                    <div class="gear-selector">
+                        <button class="gear-btn park" data-gear="P" onclick="setGear('P')">P</button>
+                        <button class="gear-btn" data-gear="R" onclick="setGear('R')">R</button>
+                        <button class="gear-btn" data-gear="N" onclick="setGear('N')">N</button>
+                        <button class="gear-btn active" data-gear="D" onclick="setGear('D')">D</button>
+                    </div>
+                </div>
+
+                <!-- Drive Modes -->
+                <div>
+                    <label class="stat-label" style="display:block; margin-bottom: 6px;">DRIVE MODES</label>
+                    <div class="mode-selector">
+                        <button class="mode-btn" data-mode="Creep" onclick="setDriveMode('Creep')">🐌 Creep</button>
+                        <button class="mode-btn" data-mode="Range" onclick="setDriveMode('Range')">🔋 Range</button>
+                        <button class="mode-btn active" data-mode="Ride" onclick="setDriveMode('Ride')">🛺 Ride</button>
+                        <button class="mode-btn" data-mode="Race" onclick="setDriveMode('Race')">🏎️ Race</button>
+                    </div>
+                </div>
+
+                <!-- Telemetry Stats -->
+                <div>
+                    <label class="stat-label" style="display:block; margin-bottom: 6px;">LIVE EV TELEMETRY</label>
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <div class="stat-value" id="statBattery">100%</div>
+                            <div class="stat-label">BATTERY</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value" id="statRange">205 km</div>
+                            <div class="stat-label">RANGE</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value" id="statOdometer">0.0 km</div>
+                            <div class="stat-label">ODOMETER</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Controls -->
+                <div class="actions-grid">
+                    <button class="action-btn" onclick="toggleHeadlights()">💡 Headlights</button>
+                    <button class="action-btn" onclick="toggleCharger()">⚡ Fast Charger</button>
+                    <button class="action-btn" onclick="showRandomFact()">🏆 LMM Facts</button>
+                    <button class="action-btn" onclick="honkHorn()">📢 Honk Horn</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

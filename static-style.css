@@ -1,0 +1,425 @@
+/* Modern Corporate Mahindra UDO EV Web Styling */
+:root {
+    --bg-dark: #070F1A;
+    --card-bg: rgba(15, 30, 48, 0.88);
+    --border-cyan: #00B4F0;
+    --accent-cyan: #00E5FF;
+    --accent-orange: #FF9F00;
+    --accent-green: #00E676;
+    --text-main: #F7FAFC;
+    --text-muted: #A0AEC0;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+body {
+    background: radial-gradient(circle at top center, #10263F 0%, #070F1A 100%);
+    color: var(--text-main);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+}
+
+/* Header Navbar */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 32px;
+    background: rgba(7, 15, 26, 0.95);
+    border-bottom: 1px solid rgba(0, 180, 240, 0.3);
+    backdrop-filter: blur(10px);
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.brand-icon {
+    font-size: 28px;
+}
+
+.brand-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #FFFFFF;
+    letter-spacing: 0.5px;
+}
+
+.brand-subtitle {
+    font-size: 12px;
+    color: var(--border-cyan);
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.nav-btn {
+    padding: 8px 18px;
+    border-radius: 20px;
+    border: 1px solid var(--border-cyan);
+    background: transparent;
+    color: var(--text-main);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.nav-btn:hover {
+    background: var(--border-cyan);
+    color: #070F1A;
+    box-shadow: 0 0 15px rgba(0, 180, 240, 0.5);
+}
+
+.nav-btn.admin-link {
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+}
+
+/* Container */
+.container {
+    flex: 1;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* Web Companion Layout */
+.companion-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 24px;
+}
+
+@media (max-width: 900px) {
+    .companion-wrapper {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Vehicle Canvas Card */
+.canvas-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(0, 180, 240, 0.4);
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.speech-bubble-container {
+    min-height: 70px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.speech-bubble-box {
+    background: rgba(15, 30, 48, 0.95);
+    border: 2px solid var(--border-cyan);
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #FFFFFF;
+    text-align: center;
+    max-width: 90%;
+    box-shadow: 0 4px 20px rgba(0, 180, 240, 0.3);
+    animation: fadeIn 0.3s ease;
+}
+
+.canvas-container {
+    width: 100%;
+    height: 280px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(ellipse at bottom, rgba(0, 180, 240, 0.15) 0%, transparent 70%);
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+}
+
+#udoCanvas {
+    background: transparent;
+    cursor: grab;
+}
+
+#udoCanvas:active {
+    cursor: grabbing;
+}
+
+/* Dashboard Control Panel Card */
+.controls-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(0, 180, 240, 0.4);
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.card-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent-cyan);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid rgba(0, 180, 240, 0.2);
+    padding-bottom: 10px;
+}
+
+/* Gear Selector P / R / N / D */
+.gear-selector {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+}
+
+.gear-btn {
+    padding: 12px 0;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 180, 240, 0.4);
+    background: rgba(10, 20, 35, 0.8);
+    color: var(--text-muted);
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.gear-btn:hover {
+    border-color: var(--border-cyan);
+    color: #FFFFFF;
+}
+
+.gear-btn.active {
+    background: var(--border-cyan);
+    color: #070F1A;
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 12px rgba(0, 180, 240, 0.6);
+}
+
+.gear-btn.park.active {
+    background: var(--accent-orange);
+    border-color: var(--accent-orange);
+    color: #070F1A;
+    box-shadow: 0 0 12px rgba(255, 159, 0, 0.6);
+}
+
+/* Drive Modes Selector */
+.mode-selector {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.mode-btn {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 180, 240, 0.3);
+    background: rgba(10, 20, 35, 0.8);
+    color: var(--text-main);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+}
+
+.mode-btn:hover {
+    border-color: var(--border-cyan);
+}
+
+.mode-btn.active {
+    background: rgba(0, 180, 240, 0.25);
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+}
+
+/* Stats Telemetry Gauge */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.stat-box {
+    background: rgba(7, 15, 26, 0.8);
+    border: 1px solid rgba(0, 180, 240, 0.2);
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+}
+
+.stat-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent-cyan);
+}
+
+.stat-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 4px;
+
+}
+
+/* Action Buttons (Headlights, Charger, Horn, Fact) */
+.actions-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.action-btn {
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border-cyan);
+    background: rgba(0, 180, 240, 0.15);
+    color: #FFFFFF;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.action-btn:hover {
+    background: var(--border-cyan);
+    color: #070F1A;
+    box-shadow: 0 0 15px rgba(0, 180, 240, 0.4);
+}
+
+/* Admin Portal Styles */
+.admin-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(0, 180, 240, 0.4);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.form-input, .form-textarea {
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 180, 240, 0.4);
+    background: rgba(7, 15, 26, 0.9);
+    color: #FFFFFF;
+    font-size: 14px;
+    outline: none;
+}
+
+.form-input:focus, .form-textarea:focus {
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
+}
+
+.btn-primary {
+    padding: 12px 24px;
+    border-radius: 8px;
+    border: none;
+    background: var(--border-cyan);
+    color: #070F1A;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.btn-primary:hover {
+    background: var(--accent-cyan);
+    box-shadow: 0 0 20px rgba(0, 229, 255, 0.5);
+}
+
+.facts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.fact-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(7, 15, 26, 0.8);
+    border: 1px solid rgba(0, 180, 240, 0.2);
+    border-radius: 8px;
+    padding: 12px 16px;
+    gap: 12px;
+}
+
+.fact-text {
+    font-size: 14px;
+    color: var(--text-main);
+}
+
+.btn-delete {
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid #FF5252;
+    background: rgba(255, 82, 82, 0.15);
+    color: #FF5252;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-delete:hover {
+    background: #FF5252;
+    color: #FFFFFF;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}

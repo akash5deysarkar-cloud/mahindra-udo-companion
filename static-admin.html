@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mahindra UDO EV Centralized Admin Portal 👑</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+    <!-- Header Navbar -->
+    <header class="navbar">
+        <div class="brand">
+            <span class="brand-icon">👑</span>
+            <div>
+                <div class="brand-title">CENTRALIZED ADMIN PORTAL</div>
+                <div class="brand-subtitle">Mahindra Last Mile Mobility Intranet</div>
+            </div>
+        </div>
+        <div class="nav-links">
+            <a href="/" class="nav-btn">🛺 Open Web Companion</a>
+        </div>
+    </header>
+
+    <!-- Main Admin Container -->
+    <div class="container" style="max-width: 900px;">
+
+        <!-- Server Telemetry Header Card -->
+        <div class="admin-card">
+            <div class="card-title">
+                <span>📊 Live Server & Intranet Fleet Status</span>
+            </div>
+            <div class="stats-grid" style="grid-template-columns: repeat(4, 1fr);">
+                <div class="stat-box">
+                    <div class="stat-value" id="adminActiveUsers" style="color: var(--accent-green);">1</div>
+                    <div class="stat-label">ACTIVE USERS</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="adminTotalFacts">4</div>
+                    <div class="stat-label">MANAGED FACTS</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" style="font-size: 14px;" id="adminDomain">corp.mahindra.com</div>
+                    <div class="stat-label">INTRANET DOMAIN</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" style="font-size: 14px; color: var(--accent-orange);" id="adminPort">Port 8000</div>
+                    <div class="stat-label">SERVER PORT</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Password Auth Header -->
+        <div class="admin-card">
+            <div class="card-title">
+                <span>🔐 Admin Authentication</span>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Enter Admin Security Key / Password:</label>
+                <input type="password" id="adminPasswordInput" class="form-input" value="mahindra2026" placeholder="Admin Password">
+            </div>
+        </div>
+
+        <!-- Push Instant Broadcast Card -->
+        <div class="admin-card">
+            <div class="card-title">
+                <span>📢 Push Instant Broadcast Announcement</span>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Broadcast Message (Pops up on ALL active employee screens):</label>
+                <textarea id="broadcastInput" class="form-textarea" rows="3" placeholder="e.g., Town Hall Meeting starting in 10 minutes in the main auditorium!"></textarea>
+            </div>
+            <button class="btn-primary" onclick="sendBroadcast()">🚀 Push Broadcast Announcement</button>
+            <div id="broadcastStatus" style="font-size: 13px; font-weight: 600;"></div>
+        </div>
+
+        <!-- Manage LMM Facts Card -->
+        <div class="admin-card">
+            <div class="card-title">
+                <span>🏆 Mahindra LMM Dynamic Fact Manager</span>
+            </div>
+
+            <!-- Add Fact Form -->
+            <div class="form-group">
+                <label class="form-label">Add New Mahindra LMM Fact:</label>
+                <input type="text" id="newFactInput" class="form-input" placeholder="Type a new fact or achievement statement...">
+            </div>
+            <button class="btn-primary" onclick="addFact()">➕ Add Fact</button>
+            <div id="factStatus" style="font-size: 13px; font-weight: 600;"></div>
+
+            <!-- Existing Facts List -->
+            <div class="card-title" style="font-size: 16px; margin-top: 10px;">
+                <span>📋 Currently Active Facts</span>
+            </div>
+            <div id="factsListContainer" class="facts-list">
+                <!-- Dynamically loaded -->
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const API_HEADERS = () => ({
+            "Content-Type": "application/json",
+            "X-Admin-Key": document.getElementById("adminPasswordInput").value.trim()
+        });
+
+        function loadStatus() {
+            fetch("/api/status")
+                .then(r => r.json())
+                .then(data => {
+                    document.getElementById("adminActiveUsers").textContent = data.active_connected_users || 1;
+                    document.getElementById("adminTotalFacts").textContent = data.total_facts || 0;
+                    document.getElementById("adminDomain").textContent = data.corporate_domain || "corp.mahindra.com";
+                })
+                .catch(e => console.log("Status fetch error"));
+        }
+
+        function loadFacts() {
+            fetch("/api/facts")
+                .then(r => r.json())
+                .then(data => {
+                    const container = document.getElementById("factsListContainer");
+                    container.innerHTML = "";
+                    if (data.facts && data.facts.length > 0) {
+                        data.facts.forEach((fact, idx) => {
+                            const item = document.createElement("div");
+                            item.className = "fact-item";
+                            item.innerHTML = `
+                                <div class="fact-text">#${idx + 1}: ${fact}</div>
+                                <button class="btn-delete" onclick="deleteFact(${idx})">🗑️ Delete</button>
+                            `;
+                            container.appendChild(item);
+                        });
+                        document.getElementById("adminTotalFacts").textContent = data.facts.length;
+                    } else {
+                        container.innerHTML = "<div style='color: var(--text-muted); font-size: 13px;'>No facts added yet.</div>";
+                    }
+                });
+        }
+
+        function sendBroadcast() {
+            const msg = document.getElementById("broadcastInput").value.trim();
+            const statusDiv = document.getElementById("broadcastStatus");
+            if (!msg) {
+                statusDiv.style.color = "#FF5252";
+                statusDiv.textContent = "Please enter a broadcast message.";
+                return;
+            }
+
+            fetch("/api/admin/broadcast", {
+                method: "POST",
+                headers: API_HEADERS(),
+                body: JSON.stringify({ message: msg, duration_ms: 8000 })
+            })
+            .then(r => {
+                if (!r.ok) throw new Error("Unauthorized Admin Password");
+                return r.json();
+            })
+            .then(data => {
+                statusDiv.style.color = "#00E676";
+                statusDiv.textContent = "✅ Broadcast pushed successfully to all active employee screens!";
+                document.getElementById("broadcastInput").value = "";
+                setTimeout(() => statusDiv.textContent = "", 4000);
+            })
+            .catch(err => {
+                statusDiv.style.color = "#FF5252";
+                statusDiv.textContent = "❌ Error: " + err.message;
+            });
+        }
+
+        function addFact() {
+            const factText = document.getElementById("newFactInput").value.trim();
+            const statusDiv = document.getElementById("factStatus");
+            if (!factText) {
+                statusDiv.style.color = "#FF5252";
+                statusDiv.textContent = "Please type a fact statement.";
+                return;
+            }
+
+            fetch("/api/admin/facts", {
+                method: "POST",
+                headers: API_HEADERS(),
+                body: JSON.stringify({ fact: factText })
+            })
+            .then(r => {
+                if (!r.ok) throw new Error("Unauthorized Admin Password");
+                return r.json();
+            })
+            .then(data => {
+                statusDiv.style.color = "#00E676";
+                statusDiv.textContent = "✅ Fact added successfully!";
+                document.getElementById("newFactInput").value = "";
+                loadFacts();
+                setTimeout(() => statusDiv.textContent = "", 4000);
+            })
+            .catch(err => {
+                statusDiv.style.color = "#FF5252";
+                statusDiv.textContent = "❌ Error: " + err.message;
+            });
+        }
+
+        function deleteFact(idx) {
+            fetch(`/api/admin/facts/${idx}`, {
+                method: "DELETE",
+                headers: API_HEADERS()
+            })
+            .then(r => {
+                if (!r.ok) throw new Error("Unauthorized Admin Password");
+                return r.json();
+            })
+            .then(data => {
+                loadFacts();
+            })
+            .catch(err => alert("Error deleting fact: " + err.message));
+        }
+
+        loadStatus();
+        loadFacts();
+        setInterval(loadStatus, 5000);
+    </script>
+</body>
+</html>
