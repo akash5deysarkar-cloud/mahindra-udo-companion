@@ -1,9 +1,9 @@
 """
 Mahindra UDO EV Companion & Admin Portal Web Server
-Runs FastAPI backend serving Web Companion App, Admin Portal, REST APIs & Live Broadcasts.
 """
 
 import os
+import shutil
 import json
 import time
 from typing import List, Optional
@@ -12,12 +12,26 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel
 
-app = FastAPI(title="Mahindra UDO EV Companion Server", version="2.0.0")
-
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_DIR = os.path.join(BASE_DIR, "static")
-DATA_FILE = os.path.join(BASE_DIR, "facts.json")
 
+# Auto-Fix for flattened GitHub web uploads (static-index.html -> static/index.html)
+if not os.path.exists(STATIC_DIR):
+    os.makedirs(STATIC_DIR, exist_ok=True)
+
+for filename in os.listdir(BASE_DIR):
+    if filename.startswith("static-"):
+        real_name = filename.replace("static-", "", 1)
+        src_path = os.path.join(BASE_DIR, filename)
+        dst_path = os.path.join(STATIC_DIR, real_name)
+        try:
+            shutil.move(src_path, dst_path)
+            print(f"Auto-fixed static file: {filename} -> static/{real_name}")
+        except Exception as e:
+            print("Auto-fix move error:", e)
+
+app = FastAPI(title="Mahindra UDO EV Companion Server", version="2.0.0")
+DATA_FILE = os.path.join(BASE_DIR, "facts.json")
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "mahindra2026")
 
 DEFAULT_FACTS = [
@@ -27,8 +41,7 @@ DEFAULT_FACTS = [
     "With the number of kms driven we have saved CO2 equivalent of planting 83 lakh trees"
 ]
 
-# In-Memory State & Heartbeats
-active_heartbeats = {} # ip -> timestamp
+active_heartbeats = {}
 current_broadcast = {"message": "", "timestamp": 0, "duration_ms": 6000}
 
 
@@ -55,7 +68,6 @@ def save_facts(facts: List[str]):
 facts_store = load_facts()
 
 
-# Pydantic Schemas
 class FactModel(BaseModel):
     fact: str
 
@@ -68,9 +80,6 @@ class HeartbeatModel(BaseModel):
     device: Optional[str] = "Web Client"
 
 
-# -------------------------------------------------------------
-# STATIC FILES & WEB ROUTES
-# -------------------------------------------------------------
 @app.get("/")
 def get_index():
     index_path = os.path.join(STATIC_DIR, "index.html")
@@ -90,9 +99,6 @@ def get_admin():
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 
-# -------------------------------------------------------------
-# PUBLIC REST APIs
-# -------------------------------------------------------------
 @app.get("/api/facts")
 def get_all_facts():
     return {"facts": facts_store}
@@ -100,7 +106,6 @@ def get_all_facts():
 
 @app.get("/api/broadcast")
 def get_broadcast():
-    # Return broadcast if sent within last 30 seconds
     if time.time() - current_broadcast["timestamp"] < 30:
         return current_broadcast
     return {"message": "", "timestamp": 0}
@@ -115,7 +120,6 @@ def post_heartbeat(hb: HeartbeatModel = Body(...), x_forwarded_for: Optional[str
 
 def get_active_clients_count() -> List[str]:
     now = time.time()
-    # Active if heartbeat in last 60 seconds
     return [ip for ip, ts in active_heartbeats.items() if now - ts < 60]
 
 
@@ -132,9 +136,6 @@ def get_status():
     }
 
 
-# -------------------------------------------------------------
-# ADMIN REST APIs (Password Protected)
-# -------------------------------------------------------------
 def verify_admin(x_admin_key: Optional[str] = Header(None)):
     if x_admin_key != ADMIN_PASSWORD:
         raise HTTPException(status_code=401, detail="Unauthorized Admin Password")
@@ -176,5 +177,4 @@ def send_broadcast(model: BroadcastModel):
 
 if __name__ == "__main__":
     import uvicorn
-    print("Starting Mahindra UDO EV Web Companion Server on http://0.0.0.0:8000 ...")
     uvicorn.run(app, host="0.0.0.0", port=8000)
